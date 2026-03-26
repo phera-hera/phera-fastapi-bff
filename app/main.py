@@ -16,7 +16,7 @@ Supported modes:
     Additional routes such as scans, history and trends are available.
 """
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .config import CORS_ORIGINS, DEPLOYMENT_MODE
@@ -45,6 +45,7 @@ app.include_router(bff_router)
 if DEPLOYMENT_MODE == "mvp":
     from .database import Base, engine
     from . import models
+    from fastapi import Depends
     from .deps import get_current_user
     from .routers.auth_dev import router as auth_router
     from .routers.scans import router as scans_router
