@@ -26,12 +26,10 @@ from .routers.bff import router as bff_router
 
 app = FastAPI(title="pHera Backend MVP")
 
-# Enable CORS for local frontend development and cross-origin BFF testing.
-allowed_origins = [o.strip() for o in CORS_ORIGINS if o.strip()] if CORS_ORIGINS else ["http://localhost:5173"]
-
+# CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
+    allow_origins=CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -41,7 +39,7 @@ app.add_middleware(
 app.include_router(health_router)
 app.include_router(bff_router)
 
-# Enable persistence and authenticated routes only in MVP mode.
+# Enable persistence and authenticated routes only in MVP mode
 if DEPLOYMENT_MODE == "mvp":
     from .database import Base, engine
     from . import models
@@ -61,4 +59,8 @@ if DEPLOYMENT_MODE == "mvp":
 
     @app.get("/api/me", tags=["auth"])
     def api_me(user: models.User = Depends(get_current_user)):
-        return {"id": user.id, "sub": user.sub, "email": user.email}
+        return {
+            "id": user.id,
+            "sub": user.sub,
+            "email": user.email,
+        }

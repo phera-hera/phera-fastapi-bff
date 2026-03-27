@@ -47,11 +47,20 @@ ZITADEL_AUDIENCE = get_env("ZITADEL_AUDIENCE")  # optional
 # Dev-only token secret (for local testing via /auth/dev-token)
 DEV_JWT_SECRET = get_env("DEV_JWT_SECRET", "dev-only-secret-change-me")
 
+# Default CORS origins for deployed frontend + local frontend testing
+DEFAULT_CORS_ORIGINS = [
+    "https://www.pheratest.com",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
 # CORS
 CORS_ORIGINS = (
-    (get_env("CORS_ORIGINS", "") or "").split(",")
+    [o.strip() for o in (get_env("CORS_ORIGINS", "") or "").split(",") if o.strip()]
     if get_env("CORS_ORIGINS")
-    else []
+    else DEFAULT_CORS_ORIGINS
 )
 
 # Controls service behavior: "beta" (proxy-only) or "mvp" (full mode)
